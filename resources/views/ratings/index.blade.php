@@ -3,13 +3,13 @@
         <form method="POST" action="{{ route('ratings.store') }}">
             @csrf
             <label for="artist" class="mt-4 text-lg text-gray-800 dark:text-gray-200">Artist</label>
-            <input type='text' id="artist" name="artist" class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+            <input type='text' id="artist" name="artist" class="block w-full border-gray-300 dark:bg-gray-800 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
             <x-input-error :messages="$errors->get('artist')" class="mt-2"/>
             <label for="title" class="mt-4 text-lg text-gray-800 dark:text-gray-200">Title</label>
-            <input type='text' id="title" name="title" class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+            <input type='text' id="title" name="title" class="block w-full border-gray-300 dark:bg-gray-800 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
             <x-input-error :messages="$errors->get('title')" class="mt-2"/>
             <label for="stars" class="mt-4 text-lg text-gray-800 dark:text-gray-200">Rating</label>
-            <input type='number' id="stars" name="stars" class="block w-20 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
+            <input type='number' id="stars" name="stars" class="block w-20 border-gray-300 dark:bg-gray-800 dark:text-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">
             <p class="text-lg text-gray-800 dark:text-gray-200">/ 5</p>
             <x-input-error :messages="$errors->get('stars')" class="mt-2"/>
             <x-primary-button class="mt-4">{{ __('Submit') }}</x-primary-button>
@@ -52,10 +52,14 @@
                                             <x-dropdown-link :href="route('ratings.edit', $rating)">
                                                 {{ __('Edit') }}
                                             </x-dropdown-link>
-                                            <x-dropdown-link
-                                                x-data=""
-                                                x-on:click.prevent="$dispatch('open-modal', 'confirm-rating-delete')"
-                                            >{{ __('Delete') }}</x-dropdown-link>
+
+                                            <form id="{{ $rating->id }}"x-data @confirm.window="document.getElementById('{{ $rating->id }}').submit()" method="POST" action="{{ route('ratings.destroy', $rating) }}">
+                                                @csrf
+                                                @method('delete')
+                                                <x-dropdown-link x-data x-on:click.prevent="$dispatch('open-modal', 'confirm-rating-delete')">
+                                                    {{ __('Delete') }}
+                                                </x-dropdown-link>
+                                            </form>
                                         @endif
                                     </x-slot>
                                 </x-dropdown>
@@ -71,20 +75,15 @@
                         {{ __('Are you sure you want to delete this rating?') }}
                     </h2>
 
-                    <form method="POST" action="{{ route('ratings.destroy', $rating) }}">
-                        @csrf
-                        @method('delete')
+                    <div class="mt-6 flex justify-end">
+                        <x-secondary-button x-on:click="$dispatch('close')">
+                            {{ __('Cancel') }}
+                        </x-secondary-button>
 
-                        <div class="mt-6 flex justify-end">
-                            <x-secondary-button x-on:click="$dispatch('close')">
-                                {{ __('Cancel') }}
-                            </x-secondary-button>
-
-                            <x-danger-button class="ml-3">
-                                {{ __('Delete') }}
-                            </x-danger-button>
-                        </div>
-                    </form>
+                        <x-danger-button class="ml-3" x-on:click="$dispatch('confirm')">
+                            {{ __('Delete') }}
+                        </x-danger-button>
+                    </div>
                 </div>
             </x-modal>
         </div>

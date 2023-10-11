@@ -24,7 +24,7 @@ class RatingController extends Controller
     public function store(Request $request) : RedirectResponse {
         $validated = $request->validate([
             'artist' => 'required|string|max:100',
-            'title' => 'required|string|max:100',
+            'title' => ['required', 'string', 'max:100', 'unique:'.Rating::class],
             'stars' => 'required|integer|lte:5|gte:0',
         ]);
 
