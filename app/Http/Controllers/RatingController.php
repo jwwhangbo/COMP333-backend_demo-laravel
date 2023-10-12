@@ -47,7 +47,7 @@ class RatingController extends Controller
 
         $validated = $request->validate([
             'artist' => 'required|string|max:100',
-            'title' => 'required|string|max:100',
+            'title' => ['required', 'string', 'max:100', 'unique:'.Rating::class],
             'stars' => 'required|integer|lte:5|gte:0',
         ]);
 
