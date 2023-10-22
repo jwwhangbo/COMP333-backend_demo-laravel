@@ -33,7 +33,7 @@ php artisan make:Model Ratings
 ```
 creates a [Rating.php](app/Models/Rating.php) under the `/Models/` directory. This file is simply a template, so it needs to filled out. 
 By default, Laravel protects against CSRF(Cross Site Request Forgery). The user entry fields are added to `$fillable` to let laravel know that this is a field that can be entered to the database.
-```
+```PHP
 # In Rating.php
 
 protected $fillable = [
@@ -43,7 +43,7 @@ protected $fillable = [
     ];
 ```
 Then, we add a relation to the Rating Model by writing
-```
+```PHP
 # In Rating.php
 
 public function user(): BelongsTo
@@ -54,7 +54,7 @@ public function user(): BelongsTo
 This maps the Rating Model to a User Model in way that a Rating can only belong to a single User.
 
 Likewise, In the User Model, we add a HasMany relation that maps the User Model to multiple Rating Models 
-```
+```PHP
 # In User.php
 
 public function ratings(): HasMany
@@ -83,7 +83,7 @@ This file is also where the frontend files are served. For example, in the `inde
 ### Policies
 
 Laravel also allows the implmentation of custom policies for which actions are allowed bby which users. In this case, policies for ratings were created (also through the `artisan` CLI) to only allow a user to delete or edit ratings that belong to them. This is done in [RatingPolicy.php](app/Policies/RatingPolicy.php)
-```
+```PHP
 public function update(User $user, Rating $rating): bool
     {
         return $rating->user()->is($user);
@@ -94,7 +94,7 @@ The above function declares the policy for which user is allowed to update which
 ### Database migration
 
 This was also a pretty convenient feature offered in laravel. It facilitates writing fields into a database such as this 
-```
+```PHP
 public function up(): void
     {
         Schema::create('ratings', function (Blueprint $table) {
